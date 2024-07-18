@@ -54,6 +54,16 @@ const config: DocsThemeConfig = {
       />
     </>
   ),
+  useNextSeoProps: () => ({
+    titleTemplate: '%s – CS Book',
+    openGraph: {
+      type: "website",
+      url: "https://youmingyeh.github.io/cs-book",
+      title: "CS Book",
+      description: "A book for learning computer science",
+    },
+  }),
+  
 };
 
 export default config;
