@@ -1,0 +1,18 @@
+{
+  "index": "介紹",
+  "description": "專案說明",
+  "data-storage": {
+    "title": "資料儲存"
+  },
+  
+  "about": {
+    "title": "About",
+    "type": "page"
+  },
+  "contact": {
+    "title": "聯絡我 ↗",
+    "type": "page",
+    "href": "https://2024-ntuim-project.github.io/docs/",
+    "newWindow": true
+  }
+}
