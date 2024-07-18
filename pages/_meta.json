@@ -1,9 +1,11 @@
 {
   "index": "Introduction",
   "overview": "Overview",
+  "beyond-the-fundamentals": "Beyond the Fundamentals",
   "roadmap": "Roadmap",
   "qa": "Q&A",
   "algorithms": "Algorithms",
+  "deep-learning": "Deep Learning",
   "about": {
     "title": "About",
     "type": "page"
