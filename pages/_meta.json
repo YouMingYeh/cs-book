@@ -1,18 +1,17 @@
 {
-  "index": "介紹",
-  "description": "專案說明",
-  "data-storage": {
-    "title": "資料儲存"
-  },
-  
+  "index": "Introduction",
+  "overview": "Overview",
+  "roadmap": "Roadmap",
+  "qa": "Q&A",
+  "algorithms": "Algorithms",
   "about": {
     "title": "About",
     "type": "page"
   },
   "contact": {
-    "title": "聯絡我 ↗",
+    "title": "Contact Me ↗",
     "type": "page",
-    "href": "https://2024-ntuim-project.github.io/docs/",
+    "href": "mailto:b10705052@ntu.edu.tw",
     "newWindow": true
   }
 }
