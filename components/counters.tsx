@@ -19,6 +19,6 @@ function MyButton() {
   )
 }
 
-export default function MyApp() {
+export default function Counters() {
   return <MyButton />
 }
