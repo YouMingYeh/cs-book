@@ -7,6 +7,9 @@
   "algorithms": "Algorithms",
   "data-structures": "Data Structures",
   "operating-system": "Operating System",
+  "linear-algebra": "Linear Algebra",
+  "discrete-mathematics": "Discrete Mathematics",
+  "computer-organization": "Computer Organization",
   "deep-learning": "Deep Learning",
   "about": {
     "title": "About",
