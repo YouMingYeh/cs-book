@@ -1,0 +1,242 @@
+## Introduction to Operating System
+In this section, we will introduce the concept of operating systems, their evolution, and the various types of operating systems.
+
+### What is an Operating System?
+
+1. **Definition**: An operating system (OS) is software that acts as an intermediary between computer hardware and software applications. It manages hardware resources and provides services to software applications.
+2. **Purpose**: The primary purpose of an OS is to provide an environment for efficient and productive program execution. Key functions include:
+
+   - **Resource Management**: Manages CPU, memory, disk storage, and I/O devices.
+   - **Process Management**: Creates, schedules, and terminates processes; manages synchronization and communication.
+   - **Memory Management**: Allocates and deallocates memory space, optimizing usage.
+   - **File System Management**: Organizes and manages files and directories.
+   - **Device Management**: Manages I/O devices like printers, scanners, and network interfaces.
+   - **Security**: Ensures data security and user authentication through access control mechanisms.
+   - **User Interface**: Provides a user-friendly interface for system interaction.
+
+3. **Examples**: Popular operating systems include Windows, macOS, Linux, Android, and iOS.
+
+![Operating System](https://scaler.com/topics/images/architecture-of-os.webp)
+
+#### Video Explanation
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/vBURTt97EkA?si=sb1Flthfqpm3qqfy"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
+> In short, an **OS is a system software** that manages computer **hardware and software** resources and **provides services for computer programs**.
+
+### Key Terms
+
+1. **CPU**: Central Processing Unit, the brain of the computer that executes instructions and manages data flow.
+2. **Memory**: Storage space where data, programs, and instructions are temporarily held during execution.
+3. **I/O Devices**: Input/Output devices like keyboards, monitors, and printers that facilitate user interaction.
+4. **Processes**: Programs in execution, consisting of code, data, and required resources.
+
+#### Bare Machine vs. Extended Machine
+
+1. **Bare Machine**: A computer without an OS, where users interact directly with hardware.
+2. **Extended Machine**: A computer with an OS, providing an extended environment for applications. The OS acts as an intermediary, offering abstraction and services for efficient interaction.
+
+![Bare Machine vs Extended Machine](https://image.slidesharecdn.com/operatingsystem02osasanextendedmachine-210603182603/75/Operating-system-02-os-as-an-extended-machine-10-2048.jpg)
+
+## Evolution of Operating Systems
+
+### Early Systems
+
+Early computers lacked modern operating systems, requiring users to interact directly with hardware by manually loading programs and managing resources through front panel switches and lights. This setup is referred to as a **Bare Machine**.
+
+![Early Computers](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Glen_Beck_and_Betty_Snyder_program_the_ENIAC_in_building_328_at_the_Ballistic_Research_Laboratory.jpg/1200px-Glen_Beck_and_Betty_Snyder_program_the_ENIAC_in_building_328_at_the_Ballistic_Research_Laboratory.jpg)
+
+- **Disadvantages**:
+
+  - High setup time: Manually loading programs meant the CPU often sat idle.
+  - Unpredictable program completion times due to manual intervention.
+
+- **Example**: Using an old computer with tapes, you would load the FORTRAN compiler tape to translate code to assembly, then switch to the assembler tape to convert to machine code, and finally run the machine code tape. This multi-step process translated high-level code into executable machine code.
+
+### Resident Monitor
+
+To address the setup time issue and reduce CPU idleness, a resident monitor program was introduced. The key functions of the resident monitor were:
+
+- **Automatic Job Sequencing**: The monitor managed job scheduling and execution sequentially without user intervention.
+- **Batch Processing**: Multiple programs were loaded into memory, and the monitor executed them one after another.
+- **I/O Handling**: The monitor executed I/O operations, freeing the CPU to perform other tasks.
+- **Control Card Interpreter**: Users provided control cards specifying job details like input/output files and execution parameters.
+- **Device Drivers**: The monitor included drivers to handle various I/O devices.
+- **Interrupt and Trap Vector**: The monitor used an interrupt vector table to handle hardware interrupts efficiently.
+
+![Resident Monitor](https://media.geeksforgeeks.org/wp-content/uploads/20190719025224/bamchie.jpg)
+
+- **Disadvantages**:
+
+  - CPU still remained idle during some I/O operations, though to a lesser extent.
+
+- **Example**: In the early days of computing, you manually load and manage programs using tapes and switches, leading to high setup times and idle CPU periods.
+
+With the resident monitor:
+
+1. **Submit Batch Jobs**: Prepare control cards with job instructions and feed them into the system.
+2. **Automatic Job Sequencing**: The monitor reads the cards, automatically loads, and executes programs sequentially.
+3. **Efficient Processing**: The monitor handles I/O operations, freeing the CPU to execute other tasks. It uses interrupts to efficiently switch between tasks, minimizing idle time.
+4. **Role Separation**: The monitor separates the roles of operator and user. The operator sets up and monitors jobs, while the user focuses on coding and problem-solving. The monitor manages job execution and I/O.
+
+### Addressing I/O Issues
+
+To prevent CPU waiting for I/O operations, these mechanisms are introduced:
+
+- **Off-line Processing**: Uses tapes instead of the card reader and printer. This allows the CPU to work without directly interacting with slow I/O devices, although setup time is high and access is sequential.
+- **Buffering**: Temporarily stores data in a buffer so the CPU can continue processing while I/O operations are performed. For example, a printer buffer allows the CPU to send data to the buffer and move on to other tasks. However, this can be inefficient if the CPU is significantly faster or slower than the I/O operations.
+- **Spooling (Simultaneous Peripheral Operation On-Line)**: Spooling uses a disk as a buffer to handle multiple jobs simultaneously. The CPU writes data to the disk, which then sends it to the printer or other I/O devices. Unlike buffering, which handles I/O operations for a single job at a time, spooling allows the concurrent execution of I/O operations for different jobs. This means that while one job is being printed, another job can be written to the disk, improving overall system efficiency.
+
+![Addressing I/O Issues](https://media.geeksforgeeks.org/wp-content/uploads/20230118172634/Spooling-in-OS.png)
+
+- **Advantages**:
+
+  - Reduced CPU idle time during I/O operations.
+  - Efficient handling of multiple jobs simultaneously.
+  - Improved system throughput and resource utilization.
+
+- **Example**:
+  - **Buffering**: Imagine you are printing a document. The CPU sends the document to a printer buffer and continues with other tasks. If the buffer fills up because the printer is slow, the CPU must wait.
+  - **Spooling**: Instead of sending the document directly to the printer, the CPU writes the document to the disk. The disk handles multiple print jobs and sends them to the printer in order. This way, the CPU can manage several tasks and jobs simultaneously without waiting for the printer to finish each job.
+
+### Types of Operating Systems
+
+![Types of Operating Systems](https://static.javatpoint.com/operating-system/images/types-of-operating-system.png)
+
+We discuss these system types: **Batch Processing**, **Multiprogramming**, **Time-Sharing**, **Distributed Systems**, **Real-Time Systems**, **Multiprocessor Systems**, **Clustered Systems** and **Handheld Systems**.
+
+#### Batch Processing
+
+Batch processing is a technique where multiple programs are executed without user interaction. The system processes a series of jobs in a batch, one after another.
+
+#### Multiprogramming
+
+- **Definition**: Multiprogramming is a technique where multiple programs are loaded into memory, and the CPU executes them by switching between them to maximize CPU usage.
+- **Key Concept**: Increases CPU utilization by reducing idle time.
+- **How It Works**: When one program waits for I/O operations, the CPU switches to another program.
+- **Example**: Running a batch job while also running a second batch job. When the first job is waiting for I/O, the second job gets CPU time.
+- **Advantage**: Efficient use of CPU resources.
+- **Limitation**: Does not provide interactive user experience. Programs run until completion or I/O wait without user interruption.
+
+- **Examples**: Running multiple batch jobs on a mainframe computer, where the CPU switches between jobs to maximize utilization.
+
+![Multiprogramming](https://scaler.com/topics/images/what-is-a-multiprogramming-operating-system.webp)
+
+#### Time-Sharing
+
+- **Definition**: Time-sharing is a type of multiprogramming where multiple users share the system simultaneously, and the CPU time is divided among all users to give each one a small time slice.
+- **Key Concept**: Provides interactive use of the system by multiple users.
+- **How It Works**: The system switches between users so quickly that each user feels they have a dedicated machine.
+- **Example**: Multiple users logged into a UNIX system, each running commands in their terminal.
+- **Advantage**: Efficiently utilizes resources and provides a responsive user experience.
+- **Limitation**: Requires fast context switching and can be complex to manage.
+
+- **Example**: Running a web browser, music player, and word processor simultaneously on your computer.
+
+![Time-Sharing](https://media.geeksforgeeks.org/wp-content/uploads/20200524180155/Capture2210.png)
+
+#### Summary Table
+
+| Feature      | Multiprogramming                                       | Time-Sharing                                          |
+| ------------ | ------------------------------------------------------ | ----------------------------------------------------- |
+| Definition   | Multiple programs in memory, CPU switches between them | Multiple users share the system with divided CPU time |
+| Key Concept  | Increase CPU utilization                               | Interactive use by multiple users                     |
+| How It Works | Switches to another program during I/O wait            | Divides CPU time among users                          |
+| Example      | Running multiple batch jobs                            | Multiple users on a UNIX system                       |
+| Advantage    | Efficient CPU use                                      | Responsive, efficient resource use                    |
+| Limitation   | No user interaction                                    | Requires fast context switching, complex management   |
+
+- **Related Concept: Multitasking**: Ability to run multiple tasks concurrently on a single CPU by rapidly switching between them.
+
+#### Distributed Systems
+
+**Distributed Systems**, also known as **Loosely Coupled Systems**, are a collection of independent computers that appear to users as a single coherent system. They share resources and communicate over a network (LAN, WAN, or the Internet). Key features include:
+
+1. Each processor has its own clock, memory, and OS.
+2. Communication occurs through a network via message passing.
+
+Distributed systems can be classified into two models:
+
+1. **Client-Server Systems**:
+
+   - Servers provide services to clients.
+   - Clients request services, and servers respond.
+   - Examples: compute servers, file servers.
+
+2. **Peer-to-Peer Systems**:
+   - All computers are equal and share resources directly.
+   - Examples: file-sharing networks, collaborative editing platforms.
+
+Advantages of Distributed Systems
+
+1. **Resource Sharing**: Access to shared resources like files, printers, and databases.
+2. **Reliability**: If one computer fails, others can continue working.
+3. **Speed Up**: Tasks can be distributed among multiple computers, speeding up processing.
+4. **Communication**: Facilitates communication through email, file transfer, etc.
+
+![Distributed Systems](https://media.geeksforgeeks.org/wp-content/uploads/20200524180155/Capture2210.png)
+
+#### Real-Time Systems
+
+There are two types of real-time systems:
+
+1. **Hard Real-Time Systems**: These systems have strict timing constraints. Missing a deadline can lead to catastrophic consequences. Examples include air traffic control systems and medical devices.
+2. **Soft Real-Time Systems**: These systems have less strict timing constraints. Missing a deadline is undesirable but not catastrophic. Examples include multimedia applications and online games.
+
+#### Multiprocessor Systems
+
+**Multiprocessor Systems**, also known as **Parallel Systems** or **Tightly Coupled Systems**, consist of multiple processors that share memory and communicate over a bus or network. These systems offer several advantages:
+
+1. **Increased Throughput**: Multiple processors can work on different tasks simultaneously, significantly improving system performance.
+2. **Economy of Scale**: Utilizing multiple processors can be more cost-effective than relying on a single high-end processor.
+3. **Increased Reliability**: If one processor fails, the system can continue functioning with the remaining processors. This capability is known as **Graceful Degradation** or **Fault Tolerance**.
+
+There are two primary types of multiprocessor systems:
+
+1. **Symmetric Multiprocessor (SMP)**: In SMP systems, all processors are treated equally and share memory. Any processor can execute tasks, similar to a team of chefs working collaboratively in a kitchen, where each chef can handle any cooking task as needed.
+2. **Asymmetric Multiprocessor (AMP)**: In AMP systems, each processor is assigned a specific task. For instance, one processor may handle I/O operations while another focuses on computation. This setup is akin to a head chef delegating specific tasks to sous chefs, with each processor specializing in its assigned role.
+
+#### Clustered Systems
+
+Clustered systems are similar to multiprocessor systems but involve multiple systems connected over a local area network (LAN). These systems work together to perform tasks, providing high availability and scalability. There are two types of clustered systems, analogous to multiprocessor systems:
+
+1. **Symmetric Clustering**: All nodes in the cluster share the workload equally.
+2. **Asymmetric Clustering**: One node is on standby and takes over in case the primary node fails.
+
+A key component of clustered systems is the **Distributed Lock Manager (DLM)**, which manages access to shared resources by coordinating locks and ensuring data consistency across the cluster.
+
+#### Handheld Systems
+
+Handheld systems include **Personal Digital Assistants (PDAs)**, **Smartphones**, and **Tablets**. These devices have limited resources, such as CPU, memory, and battery life. They run specialized operating systems optimized for mobile use, such as **iOS** and **Android**. These operating systems are designed to efficiently manage the constraints of handheld devices while providing a user-friendly interface and robust functionality.
+
+### Comparison of Types of Operating Systems
+
+| Feature          | Batch Processing                                   | Multiprogramming                                       | Time-Sharing                                          | Distributed Systems                                   | Real-Time Systems                                | Multiprocessor Systems                                       | Clustered Systems                                     | Handheld Systems                                |
+| ---------------- | -------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------- | ----------------------------------------------- |
+| **Definition**   | Executes a series of jobs without user interaction | Multiple programs in memory, CPU switches between them | Multiple users share the system with divided CPU time | Independent computers working together over a network | Systems with strict timing constraints           | Multiple processors sharing memory and communication         | Multiple systems connected over LAN                   | Portable devices with specialized OS            |
+| **Key Concept**  | Sequential job processing                          | Increases CPU utilization by reducing idle time        | Interactive use by multiple users                     | Resource sharing and communication                    | Timely task execution                            | Parallel processing                                          | High availability and scalability                     | Optimization for limited resources              |
+| **How It Works** | Processes jobs one after another                   | Switches to another program during I/O wait            | Divides CPU time among users                          | Communicates via message passing                      | Hard: strict deadlines, Soft: flexible deadlines | Shared memory and communication bus or network               | Symmetric: equal load, Asymmetric: standby takes over | Runs on devices like smartphones, tablets, PDAs |
+| **Example**      | Payroll processing, billing programs               | Multiple batch jobs                                    | Multiple users on a UNIX system                       | Client-server, peer-to-peer networks                  | Air traffic control, multimedia applications     | Symmetric: all processors equal, Asymmetric: dedicated roles | Load balancing, backup servers                        | iOS, Android                                    |
+| **Advantage**    | Efficient for large data volumes                   | Efficient CPU use                                      | Responsive user experience                            | Resource sharing, reliability                         | Ensures timely completion of tasks               | Increased throughput, cost-effective                         | High availability, scalability                        | Portability, efficient resource management      |
+| **Limitation**   | No user interaction                                | No interactive experience                              | Requires fast context switching                       | Network dependency, complexity                        | High cost, complexity                            | Complexity in management                                     | Complexity in distributed resource management         | Limited resources, performance constraints      |
+
+### Conclusion
+
+In the journey through operating systems, we started with **Batch Processing**, where early computers ran jobs sequentially without user interaction. Then came **Multiprogramming**, maximizing CPU use by switching between programs, followed by **Time-Sharing** systems that allowed multiple users to interact with the computer simultaneously.
+
+**Distributed Systems** took things further by connecting independent computers over a network, sharing resources and improving reliability. **Real-Time Systems** emerged to handle critical tasks with precise timing, like in air traffic control.
+
+**Multiprocessor Systems** brought multiple processors together, sharing memory to boost performance and reliability. **Clustered Systems** expanded this idea, connecting multiple systems over a network for high availability and scalability.
+
+Finally, **Handheld Systems** arrived, bringing computing power to our pockets with devices like smartphones and tablets, optimized for mobility and efficiency.
+
+Each step in this evolution built upon the last, solving new problems and opening up new possibilities, creating the diverse and powerful operating systems we rely on today.

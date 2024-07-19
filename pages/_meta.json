@@ -5,6 +5,8 @@
   "roadmap": "Roadmap",
   "qa": "Q&A",
   "algorithms": "Algorithms",
+  "data-structures": "Data Structures",
+  "operating-system": "Operating System",
   "deep-learning": "Deep Learning",
   "about": {
     "title": "About",
@@ -14,6 +16,12 @@
     "title": "Contact Me ↗",
     "type": "page",
     "href": "mailto:b10705052@ntu.edu.tw",
+    "newWindow": true
+  },
+  "ChatGPT": {
+    "title": "ChatGPT",
+    "type": "page",
+    "href": "https://chatgpt.com/",
     "newWindow": true
   }
 }
