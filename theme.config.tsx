@@ -63,6 +63,9 @@ const config: DocsThemeConfig = {
       description: "A book for learning computer science",
     },
   }),
+  sidebar: {
+     defaultMenuCollapseLevel: 1
+  }
   
 };
 

@@ -1,0 +1,270 @@
+## Operating System Structure
+
+### Key Components
+
+![Operating System Structure](https://static.javatpoint.com/operating-system/images/components-of-operating-system.png)
+
+1. **Process Management**
+
+   - Create/Delete Processes
+   - Suspend/Resume Processes
+   - Process Synchronization
+   - Process Communication
+   - Deadlock Handling
+
+2. **Memory Management**
+
+   - Track Memory
+   - Allocate/Deallocate Memory
+   - Memory Allocation
+
+3. **Secondary Storage Management**
+
+   - Disk Management
+   - Manage Free Space
+   - Storage Allocation
+   - Disk Scheduling
+
+4. **I/O System Management**
+
+   - Buffering
+   - Device-Driver Interface
+   - Proprietary Drivers
+
+5. **File Management**
+
+   - File/Directory Management
+   - Basic File Operations
+   - Storage Correspondence
+   - File Backup
+
+6. **Protection**
+
+   - CPU Protection
+   - Memory Protection
+   - I/O Protection
+   - File Protection
+   - Resource Protection
+
+7. **Networking**
+
+### Operating System Services
+
+![Operating System Services](https://scaler.com/topics/images/program-creation-flow-chart.webp)
+
+1. **Program Execution**: Load, execute, and terminate programs.
+2. **I/O Operations**: Provide interfaces for I/O operations as users cannot directly interact with hardware.
+3. **File System Manipulation**: Create, read, write, and delete files.
+4. **Inter-Process Communication (IPC)**: Enable communication between processes via shared memory or message passing.
+5. **Error Handling**:
+   - CPU or memory errors
+   - I/O errors
+   - User program errors
+   - Protection and consistency errors
+6. **Resource Allocation**: Efficiently allocate resources to processes using a scheduler, considering CPU speed, necessary jobs, usage registers, and managing devices like plotters and modems.
+7. **Accounting**: Track resource usage by users for billing or system improvement.
+8. **Protection**: Implement authentication, authorization, access control, and secure external I/O devices like modems and network interfaces.
+
+### System Calls
+
+System calls serve as an interface between running programs (processes) and the operating system (OS). They typically use assembly language commands, though some systems allow high-level languages to call system calls directly. These calls usually resemble function calls and use special runtime routines to generate system calls or inline system calls.
+
+#### Example Scenario: File Operations
+
+Consider coding an editor that reads data from one file and copies it to another:
+
+1. **Input and Output File Names**: System calls for displaying messages on the screen and reading characters from the keyboard.
+2. **Open Input File and Create Output File**: System calls to handle file operations.
+3. **Read System Call**: Reads data from the input file.
+4. **Write System Call**: Writes data to the output file.
+5. **Close System Call**: Closes both input and output files.
+6. **Exit System Call**: Ends the program.
+
+Users typically do not see these details as runtime support systems provide simple interfaces for most programming languages to call system calls.
+
+#### Passing Parameters to System Calls
+
+System parameters are usually passed to the OS through:
+
+1. **Registers**: Passing parameters directly in registers.
+2. **Memory Block**: Storing parameters in a memory block and storing the block's address in a register.
+3. **Stack**: Storing parameters on the stack.
+
+#### System Call Types
+
+1. **Process Control**: End, abort, create, load, execute, and terminate processes; read/write process attributes; wait for time, events, or other processes; allocate and release memory.
+2. **File Management**: Create, delete, open, close, read, write, relocate, and get/set file attributes.
+3. **Device Management**: Request, release, read, write, manage device operations, and get/set device attributes; logically connect and disconnect devices.
+4. **Information Maintenance**: Get and set time or date; get and set system data; get and set process, file, or device attributes.
+5. **Communications**: Create, delete, send, and receive messages; establish and terminate connections.
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/lhToWeuWWfw?si=X7Ib3s37sg8vJOvf"
+  title="YouTube video player"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerPolicy="strict-origin-when-cross-origin"
+  allowFullScreen
+></iframe>
+
+### Command Interpreter System Program
+
+The command interpreter system, or shell (UNIX), serves as the interface between users and the operating system. It reads and executes commands entered by the user, typically upon login or job start.
+
+There are two primary implementation methods:
+
+1. **Built-in Commands**:
+
+   - Commands are embedded within the interpreter itself.
+   - For example, entering `delete file.txt` executes the internal `delete` function directly.
+
+2. **External Programs**:
+   - Commands are interpreted as external programs.
+   - For example, entering `delete file.txt` prompts the interpreter to search, load and execute a separate program file named `delete`, passing `file.txt` as an argument.
+
+An example scenario illustrates the difference:
+
+**Deleting `file.txt`**:
+
+1. **Built-in**:
+
+   - Type `delete file.txt`.
+   - The shell executes the built-in delete function immediately.
+
+2. **External**:
+   - Type `delete file.txt`.
+   - The shell loads and runs the `delete` program (a file), which handles the file deletion.
+
+The game Lethal Company features a command-line interface for interacting with the game world, which is pretty fun.
+![Terminal](https://oyster.ignimgs.com/mediawiki/apis.ign.com/lethal-company/9/9d/Terminal_commands.jpg?width=640)
+
+### System Structure
+
+#### MS-DOS (Micro Soft-Diskette Operating System)
+
+MS-DOS operates without dual-mode functionality or hardware protection, which limits its control over hardware and security capabilities.
+![MS-DOS](https://media.geeksforgeeks.org/wp-content/uploads/20221018025253/MSDOSLayerStructure.png)
+
+#### UNIX
+
+UNIX has a modular structure with a core kernel and system programs. The kernel manages interfaces and device drivers, while system programs handle file systems, CPU scheduling, memory management, and other services.
+
+- **Kernel**: Manages system resources and hardware.
+- **Shell**: The user interface for command execution.
+
+![UNIX](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYX5oXyJeAggqyEs-L4pgoCof96PAQHuBaP2NIhVc_MuC1QeXRUkptLOJ5sWz7H2_rmp4&usqp=CAU)
+
+### Layered Approach
+
+The layered approach to operating system design structures the OS into multiple layers, each built on top of the lower layers. Each layer provides specific functionality and interacts only with the layer directly below it, allowing for modularity and easier debugging. The bottom layer (layer 0) is the hardware, and the highest layer (layer N) is the user interface.
+
+However, this approach has some challenges:
+
+1. **Complex Design**: Structuring an OS in layers requires careful planning to ensure efficient communication and functionality.
+2. **Performance Overhead**: Multiple layers can introduce performance overhead due to added levels of abstraction.
+3. **Dependency Management**: Ensuring proper dependencies and interactions between layers can be complex.
+
+### Virtual Machines
+
+With CPU scheduling and virtual memory, an operating system can create multiple virtual machines (VMs) on a single physical machine. Each VM operates with its own OS instance, applications, and resources, giving the illusion of multiple independent machines on the same hardware.
+
+The benefits of virtual machines include:
+
+- **Isolation**: Each VM operates independently, preventing issues in one VM from affecting others.
+- **Security**: Enhanced security as each VM is isolated from others.
+- **Resource Allocation**: Efficient use of hardware by allocating resources as needed.
+- **Flexibility**: Different OS environments can run on the same hardware.
+
+The challenges of virtual machines include:
+
+- **Accuracy**: Creating an accurate low-level machine copy is complex.
+- **User Mode Limitation**: VMs run in user mode, necessitating further separation of virtual kernel and user modes.
+- **Communication**: Facilitating communication between VMs can be difficult.
+
+Virtual machines utilize spooling and file systems to manage multiple I/O devices efficiently, creating virtual readers and writers. This isolation ensures that errors or modifications within a VM do not crash the entire physical system.
+
+### Java Virtual Machine (JVM)
+
+The Java Virtual Machine (JVM) executes Java bytecode, which is generated by compiling Java source files. The JVM includes several key components:
+
+- **Class Loader**: Loads class files into the JVM.
+- **Class Verifier**: Ensures that loaded classes are valid and do not violate Java's security constraints, preventing issues like buffer overflow or underflow.
+- **Garbage Collection**: Automatically manages memory by removing objects that are no longer in use.
+
+#### Java Interpreter and Just-In-Time (JIT) Compiler
+
+- **Java Interpreter**: A software module that converts Java bytecode into machine code at runtime. It reads and executes one bytecode instruction at a time, which can be slower.
+
+- **Just-In-Time (JIT) Compiler**: Converts Java bytecode into machine code at runtime, but unlike the interpreter, it compiles entire blocks of bytecode to machine code before execution. This makes the execution faster because the compiled code can be directly executed by the CPU without further interpretation.
+
+The JIT compiler improves performance significantly compared to the interpreter by optimizing the bytecode into highly efficient machine code.
+
+### Mechanism and Policy
+
+Operating systems separate mechanism and policy to provide flexibility and ease of modification. Mechanisms define **how** tasks are performed, while policies define **what** tasks should be done. This separation allows policies to change without altering the underlying mechanisms, enhancing system adaptability and maintainability.
+
+### Microkernel
+
+The microkernel architecture reduces the size and complexity of the kernel by moving non-essential components to user space. The microkernel includes only essential functions such as:
+
+- **Address Spaces**
+- **Inter-Process Communication (IPC)**
+- **Basic Scheduling**
+
+Other services, such as device drivers and file systems, run as user-level processes. Communication between these components occurs through message passing, which can be slower than direct function calls.
+
+The advantages of a microkernel include:
+
+- **Scalability**: Easier to add new services without modifying the kernel.
+- **Reliability**: Isolating non-essential components reduces the risk of kernel crashes, as services run as user-level processes.
+- **Flexibility**: Simplifies updates and maintenance, allowing changes to services without impacting the core kernel.
+
+### Conclusion
+
+> If you find it hard to absorb the information, try to review the overall concepts by watching the video below. 🧠
+
+In this section, we explored the **Operating System Structure**, focusing on its key components such as process management, memory management, and I/O management, which ensure efficient and secure system operations.
+
+We discussed **Operating System Services**, including program execution, I/O operations, file system management, inter-process communication, error handling, resource allocation, accounting, and protection.
+
+The role of **System Calls** was examined, highlighting their importance as an interface between running programs and the OS, enabling essential operations like process control, file management, and device management.
+
+The **Command Interpreter System Program** (or shell) was discussed, emphasizing its function as the user interface for command execution, either through built-in commands or external programs.
+
+We reviewed the **System Structure** of MS-DOS and UNIX, illustrating their approaches to managing hardware and software resources.
+
+The **Layered Approach** in OS design was covered, showing how it organizes the system into modular layers, each providing specific functions.
+
+We explored **Virtual Machines**, which create isolated environments on a single physical machine, offering benefits like isolation and flexibility, while presenting challenges like accurate low-level replication.
+
+The **Java Virtual Machine (JVM)** was discussed, detailing its role in running Java bytecode, ensuring platform independence, and using interpreters and Just-In-Time (JIT) compilers for efficient execution.
+
+The **Microkernel Architecture** was examined, highlighting its benefits in scalability, reliability, and flexibility by isolating non-essential components and reducing kernel size.
+
+Finally, we covered the separation of **Mechanism and Policy** in OS design, which allows for flexible policy changes without altering the underlying mechanisms, enhancing system adaptability.
+
+> Nice work! You've gained a comprehensive understanding of Operating System Structure and its key components. Keep exploring to deepen your knowledge and apply these concepts in practice. 🚀
+
+### Further Reading
+
+import { Cards, Card } from "nextra/components";
+
+<Cards>
+  <Card
+    icon={"🤔"}
+    title="Quick exercise for this section"
+    href="/operating-system/exercises/operating-system-structure-exercise"
+  />
+  <Card
+    icon={"📺"}
+    title="周志遠作業系統 Ch2: OS Structure"
+    href="https://ocw.nthu.edu.tw/ocw/index.php?page=chapter&cid=141&chid=1841&video_url=https%3A%2F%2Focw.nthu.edu.tw%2Fvideosite%2Findex.php%3Fop%3Dwatch%26id%3D3915%26filename%3D1920_1080_3072.MP4%26type%3Dview%26cid%3D141%26chid%3D1841&name=L5_B"
+  />
+  <Card
+    icon={"📺"}
+    title="Neso Academy | Operating System Structure"
+    href="https://www.youtube.com/watch?v=fvN98a_7AT4&list=PLBlnK6fEyqRgRF-FUWec-0w4yWCurLy1t"
+  />
+</Cards>
