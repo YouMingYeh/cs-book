@@ -52,6 +52,7 @@ const config: DocsThemeConfig = {
         property="og:description"
         content="A book for learning computer science"
       />
+      <meta name="google-site-verification" content="KlB8HAliW3U2XMLjfP-97uvWP85RZA8-viNXEHOByzg" />
     </>
   ),
   useNextSeoProps: () => ({
@@ -65,7 +66,7 @@ const config: DocsThemeConfig = {
   }),
   sidebar: {
      defaultMenuCollapseLevel: 1
-  }
+  },
   
 };
 

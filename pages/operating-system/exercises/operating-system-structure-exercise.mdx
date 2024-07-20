@@ -249,3 +249,29 @@ a.
 Dual-mode operation in computer systems ensures secure and efficient functioning by distinguishing between **kernel mode** and **user mode**. **Kernel mode** (or monitor mode) allows the operating system to execute privileged instructions and manage hardware resources directly. **User mode** restricts applications from accessing hardware directly, preventing misuse of CPU, memory, and I/O devices. This separation enhances **hardware resource protection**, balanced resource allocation, and overall system stability. Key mechanisms include **system calls** for user requests, **interrupt service routines (ISRs)** for handling hardware interrupts, and **schedulers** and **dispatchers** for managing process execution and transitions efficiently.
 
 </details>
+
+<details>
+<summary>
+Which are correct for operating system structure?
+a. In MS-DOS, application programs are able to access the basic I/O routines to write directly to the display and disk drivers.
+b. The early UNIX system modularized the kernel using the microkernel approach.
+c. Layered approach used in the operating system structure simplifies debugging and system verification.
+d. Solaris is organized around a core kernel with several types of loadable kernel modules.
+</summary>
+
+**Answer**:
+
+a. In MS-DOS, application programs are able to access the basic I/O routines to write directly to the display and disk drivers.  
+c. Layered approach used in the operating system structure simplifies debugging and system verification.  
+d. Solaris is organized around a core kernel with several types of loadable kernel modules.  
+
+**Explanation**:
+
+- **a**: MS-DOS allows applications to directly access system hardware, which is one of the reasons for its lack of security and protection.
+- **c**: The layered approach indeed simplifies debugging and system verification by enforcing a hierarchical structure.
+- **d**: Solaris uses a modular approach with a core kernel and various loadable kernel modules for flexibility and extensibility.
+
+**Incorrect Statement**:
+
+- **b**: The early UNIX system did not use the microkernel approach; it used a monolithic kernel where all operating system services ran in the kernel space.
+</details>
