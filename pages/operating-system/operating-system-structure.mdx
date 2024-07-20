@@ -207,19 +207,23 @@ Operating systems separate mechanism and policy to provide flexibility and ease 
 
 ### Microkernel
 
-The microkernel architecture reduces the size and complexity of the kernel by moving non-essential components to user space. The microkernel includes only essential functions such as:
+The microkernel architecture reduces the kernel's size and complexity by moving non-essential components to **user space**. The microkernel includes only essential functions such as:
 
-- **Address Spaces**
-- **Inter-Process Communication (IPC)**
-- **Basic Scheduling**
+- **Address Spaces**: Memory management.
+- **Inter-Process Communication (IPC)**.
+- **Basic Scheduling**.
 
-Other services, such as device drivers and file systems, run as user-level processes. Communication between these components occurs through message passing, which can be slower than direct function calls.
+Other services, like device drivers and file systems, run as user-level processes. Communication between these components occurs through message passing, which can be slower than direct function calls.
 
-The advantages of a microkernel include:
+**Advantages:**
 
-- **Scalability**: Easier to add new services without modifying the kernel.
-- **Reliability**: Isolating non-essential components reduces the risk of kernel crashes, as services run as user-level processes.
-- **Flexibility**: Simplifies updates and maintenance, allowing changes to services without impacting the core kernel.
+- **Scalability & Flexibility**: Easier to add new services without modifying the kernel. Simplifies updates and maintenance, allowing changes to services without impacting the core kernel.
+- **Reliability & Security**: Isolating non-essential components improves system reliability and security. If a user-level service crashes, it does not affect the entire core kernel, and thus the system remains operational.
+
+**Disadvantages:**
+
+- **Performance Overhead**: Frequent context switches and message passing between user space and kernel space can lead to performance overhead compared to monolithic kernels.
+- **Complexity**: Designing and implementing a microkernel is more complex due to the need to define and manage the communication between various services running in user space.
 
 ### Conclusion
 

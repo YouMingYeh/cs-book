@@ -75,14 +75,14 @@ Consider downloading a large file from the internet while working on a document:
 
 ### I/O Operation Management
 
-#### Waiting for I/O to Complete
+#### Waiting for I/O to Complete (Polling, Synchronous I/O)
 
 - **Wait Instruction**: The CPU idles until the I/O operation is finished.
 - **Busy Waiting (Polling)**: If no wait instruction exists, the CPU continuously checks the I/O status, wasting resources.
 - **Advantages**: The OS knows which device caused the interrupt as only one request is handled at a time.
 - **Disadvantages**: Prevents parallel I/O operations, reducing efficiency.
 
-#### Starting I/O and Returning Control to User Program
+#### Starting I/O and Returning Control to User Program (Asynchronous I/O)
 
 - After initiating the I/O, control returns to the user program.
 - The user program can request the OS to wait for I/O completion via another system call.
