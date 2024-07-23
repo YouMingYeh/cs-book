@@ -486,9 +486,9 @@ MIPS lacks specific conditional instructions like `ble`, `bgt`, `blt`, and `bge`
 
 | Pseudo-instruction | What it Accomplishes | Solution                     |
 |--------------------|-----------------------|------------------------------|
-| `ble $t3, $t5, L`  | if ($t3 <= $t5) go to L | `slt $at, $t5, $t3` <br/> `beq $at, $zero, L` |
-| `bgt $t4, $t5, L`  | if ($t4 > $t5) go to L | `slt $at, $t5, $t4` <br/> `bne $at, $zero, L` |
-| `bge $t5, $t3, L`  | if ($t5 >= $t3) go to L | `slt $at, $t3, $t5` <br/> `beq $at, $zero, L` |
+| `ble $t3, $t5, L`  | if (`$t3 <= $t5`) go to L | `slt $at, $t5, $t3` <br/> `beq $at, $zero, L` |
+| `bgt $t4, $t5, L`  | if (`$t4 > $t5`) go to L | `slt $at, $t5, $t4` <br/> `bne $at, $zero, L` |
+| `bge $t5, $t3, L`  | if (`$t5 >= $t3`) go to L | `slt $at, $t3, $t5` <br/> `beq $at, $zero, L` |
 
 Addressing Immediate Values
 
@@ -503,3 +503,698 @@ The terms **small** and **big** refer to the size of the immediate value:
 </details>
 
 ### Logical Instructions
+**Shift** instructions move bits left or right by a specified number of positions. The format is `op dest, src, count`, where `op` is the operation, `dest` is the destination register, `src` is the source register, and `count` is the number of positions to shift.
+
+| Operation             | Format               | Function                           | Example (C to MIPS)                |
+|-----------------------|----------------------|------------------------------------|------------------------------------|
+| **Shift Left Logical** | `sll $d, $t, shamt`  | `$d <- $t << shamt`                | `p = q << 2` -> `sll $s0, $s1, 2`  |
+| **Shift Right Logical** | `srl $d, $t, shamt` | `$d <- $t >> shamt`                | `p = q >> 3` -> `srl $s0, $s1, 3`  |
+| **Shift Right Arithmetic** | `sra $d, $t, shamt` | `$d <- $t >> shamt` (sign-extended) | `p = q >> 3` -> `sra $s0, $s1, 3` |
+
+- **shamt**: Shift amount, the number of positions to shift.
+- **Shift Right Arithmetic (sra)** preserves the sign bit during right shifts. For example, `1101 >> 1` becomes `1110`.
+- Every shift operation is like multiplying or dividing by 2. For example, `x << 2` is equivalent to `x * 4`.
+
+> **Note**: SLA (Shift Left Arithmetic) is equal to SLL (Shift Left Logical) in MIPS, hence it is not a separate MIPS instruction.
+
+**AND**, **OR**, **NOR**, and **XOR** instructions perform bitwise logical operations. The format is `op dest, src1, src2`, where `op` is the operation, `dest` is the destination register, and `src1` and `src2` are the source registers.
+
+| Operation | Format              | Function                   | Example (C to MIPS)                 |
+|-----------|---------------------|----------------------------|-------------------------------------|
+| **AND**   | `and $d, $s, $t`    | `$d <- $s & $t`            | `p = q & r` -> `and $s0, $s1, $s2`  |
+| **OR**    | `or $d, $s, $t`     | `$d <- $s \| $t`           | `p = q \| r` -> `or $s0, $s1, $s2`  |
+| **NOR**   | `nor $d, $s, $t`    | `$d <- ~($s \| $t)`        | `p = ~(q \| r)` -> `nor $s0, $s1, $s2` |
+| **XOR**   | `xor $d, $s, $t`    | `$d <- $s ^ $t`            | `p = q ^ r` -> `xor $s0, $s1, $s2`  |
+
+- **XOR (Exclusive OR)**: Sets the destination bit to 1 if only one of the source bits is 1.
+
+**Bitwise Operations**:
+- **AND**: `0011 & 1010 = 0010` -> Mask bits in a word, i.e., select some bits, clear others to 0.
+- **OR**: `0011 | 1010 = 1011` -> Include bits in a word, i.e., set some bits to 1, leave others unchanged.
+- **NOR**: `~(0011 | 1010) = 0100` -> Negate the OR operation, i.e., set bits to 1 where both inputs are 0.
+- **XOR**: `0011 ^ 1010 = 1001` -> Exclusive OR, i.e., set bits to 1 where only one input bit is 1.
+
+**Pseudo-Instructions** (MIPS does not have direct instructions for these operations):
+- **`not $d, $s`**: Equivalent to `nor $d, $s, $zero` or `nor $d, $s, $s` (logical NOT operation) -> `not $s0, $s1`
+
+**Example**
+- C code: `p = (q & r) | (s << 2);` (`$s1` holds q, `$s2` holds r, `$s3` holds s)
+- MIPS assembly:
+    - `and $t0, $s1, $s2` (`q & r -> $t0`)
+    - `sll $t1, $s3, 2` (`s << 2 -> $t1`)
+    - `or $s0, $t0, $t1` (`(q & r) | (s << 2) -> $s0`)
+
+
+**Quick Quiz**:
+- a. `andn $t1, $s2, $s3` (ANDN: Set to 1 if `$s2` AND NOT `$s3`)
+- b. `xnor $t1, $s2, $s3` (XNOR: Set to 1 if both are equal or NOT XOR)
+<details>
+<summary>
+🤔 How can we implement the above operations using the minimal set of MIPS instructions? If `$s2` = 0x00FFA5A5 and `s3` = 0xFFFF003C, what is the result of `t1`?
+</summary>
+- `$s2` = 0x00FFA5A5 = 0000 0000 1111 1111 1010 0101 1010 0101
+- `$s3` = 0xFFFF003C = 1111 1111 1111 1111 0000 0000 0011 1100
+
+a.
+```assembly
+nor $t1, $s3, $zero  # NOT $s3
+and $t1, $s2, $t1    # $s2 AND NOT $s3
+```
+`$t1` = 0x0000A581
+
+b.
+```assembly
+xor $t1, $s2, $s3    # $s2 XOR $s3
+nor $t1, $t1, $zero  # NOT ($s2 XOR $s3)
+```
+`$t1` = 0x00FF5A66
+
+</details>
+
+
+**Quick Quiz**:
+- a. `A = B & C[0];`
+- b. `A = A ? B : C[0];`
+<details>
+<summary>
+🤔 Consider the above two C statements, if the memory location at C[0] contians the integer value 0x00001234, and initial integer value of A and B are 0x00000000 and 0x00002222, what is the result value of A?
+</summary>
+
+Assume $t1 = A, $t2 = B, $s1 = base address of C.
+
+- `$t1` = 0x00000000 = 0000 0000 0000 0000 0000 0000 0000 0000
+- `$t2` = 0x00002222 = 0000 0000 0000 0000 0010 0010 0010 0010
+- `$s1` = 0x00001234 = 0000 0000 0000 0000 0001 0010 0011 0100
+
+a.
+```assembly
+lw $t0, 0($s1)  # Load C[0] into $t0
+and $t1, $t2, $t0  # B & C[0] -> A
+```
+`$t1` = 0x00000220 = 0000 0000 0000 0000 0000 0010 0010 0000
+
+b.
+```assembly
+beq $t1, $zero, Else  # If A == 0, go to Else
+add $t1, $zero, $t2  # A = B
+beq $zero, $zero, End  # Skip Else
+Else: lw $t1, 0($s1)  # Load C[0] into $t0
+End:
+```
+`$t1` = 0x00001234 = 0000 0000 0000 0000 0001 0010 0011 0100
+
+</details>
+
+<details>
+<summary>
+🤔 Implement this instruction: `swap $s0, $1` with only 3 instructions and 2 registers.
+</summary>
+
+```assembly
+xor $s0, $s0, $s1  # $s0 <- $s0 XOR $s1
+xor $s1, $s0, $s1  # $s1 <- ($s0 XOR $s1) XOR $s1 = $s0
+xor $s0, $s0, $s1  # $s0 <- ($s0 XOR $s1) XOR [($s0 XOR $s1) XOR $s1] = $s1
+```
+
+</details>
+
+
+### Constants
+
+To add a constant loaded from memory to a register, use the `lw` instruction to load the constant into a register. For example, to add a constant 4 to register `$s3`:
+
+```assembly
+.data
+AddConstant4: .word 4 # Define the constant 4 in memory
+
+.text
+main:
+    lw $t0, AddConstant4 # Load the constant 4 from memory into $t0
+    add $s3, $s3, $t0    # Add the value in $t0 to $s3
+```
+
+This approach requires a memory access, which can be slow. To optimize, use **immediate instructions** to load constants directly into registers without memory access:
+
+```assembly
+addi $s3, $s3, 4 # Add the constant 4 to $s3
+```
+
+Immediate instructions use a 16-bit immediate value, which is extended to 32 bits. The immediate value can be positive or negative with a range of $-2^{15}$ to $2^{15}-1$.
+- For logical instructions like `andi`, the immediate value is zero-extended.
+- For arithmetic instructions like `addi`, the immediate value is sign-extended, where positive values are padded with zeros and negative values are padded with ones.
+
+MIPS provides `lui` (Load Upper Immediate) to load the upper 16 bits of a 32-bit constant into a register. For example, to load the constant 0x1234 into register `$t0`:
+
+```assembly
+lui $t0, 0x1234 # Load the upper 16 bits of 0x1234 into $t0
+```
+
+To load the constant 0x12345678 into register `$t0`, you need two instructions, where `ori` (OR Immediate) loads the lower 16 bits:
+
+```assembly
+lui $t0, 0x1234       # Load upper 16 bits
+ori $t0, $t0, 0x5678  # Load lower 16 bits
+```
+
+<details>
+<summary>
+🤔 Load the following 32-bit constant into register `$s0`: 0000 0000 0011 1101 0000 1001 0000 0000
+</summary>
+
+```assembly
+lui $s0, 0x003D       # Load the upper 16 bits: 0000 0000 0011 1101 
+ori $s0, $s0, 0x0900  # Load the lower 16 bits: 0000 1001 0000 0000
+```
+</details>
+
+
+**Quick Quiz**:
+- a. `$t0` = 0x55555555, `$t1` = 0x12345678
+- b. `$t0` = 0xBEADFEED, `$t1` = 0xDEADFADE
+
+1. **What is the value of `$t2` after the following instructions?**
+```assembly
+sll $t2, $t0, 4 
+or $t2, $t2, $t1
+```
+
+2. **What is the value of `$t3` after the following instructions?**
+```assembly
+sll $t2, $t0, 4
+andi $t3, $t2, -1 # -1 = 0xFFFFFFFF
+```
+
+<details>
+<summary>
+🤔 What are the results of the above operations?
+</summary>
+
+**Answer**:
+1. **Value of `$t2`**:
+   - a. 0x57755778
+   - b. 0xFEFFFEDE
+
+2. **Value of `$t3`**:
+   - a. 0x00005550
+   - b. 0x0000EED0
+
+**Note**: The immediate value can be negative! The range of immediate values is -2^15 to 2^15-1.
+</details>
+
+
+### Assembly and Machine Code
+
+In MIPS assembly, there are three types of instruction formats: R-type, I-type, and J-type.
+
+| Instruction Type | Elements | Example Instructions |
+|------------------|----------|----------------------|
+| **R-type**       | Three registers | `add`, `sub`, `and`, `or`, `slt`, `sll`, `srl`, `sra` |
+| **I-type**       | Two registers and one 16-bit constant/address | `addi`, `lw`, `sw`, `beq`, `bne`, `andi`, `ori` |
+| **J-type**       | One 26-bit address | `j`, `jal` |
+
+#### Instruction Formats
+- **R-type**: `op rs rt rd shamt funct`
+- **I-type**: `op rs rt address/immediate`
+- **J-type**: `op 26-bit address`
+
+A **Field** is a part of a continuous sequence of bits in a machine instruction that represents a register, immediate value, or address.
+
+| Field | Length | Description |
+|-------|--------|-------------|
+| `op`  | 6 bits | Opcode, basic operation of the instruction |
+| `rs`  | 5 bits | Source register |
+| `rt`  | 5 bits | Target register |
+| `rd`  | 5 bits | Destination register |
+| `shamt` | 5 bits | Shift amount for shift instructions |
+| `funct` | 6 bits | Function code, specifies the exact operation for R-type instructions like `add`, `sub`, etc. |
+| `address/immediate` | 16 bits | Memory address or immediate value (constant) |
+| `address` | 26 bits | Jump target address for J-type instructions |
+
+See: [Opcode](https://student.cs.uwaterloo.ca/~isg/res/mips/opcodes)
+
+**Steps to Translate Instructions to Machine Code**:
+1. Determine the instruction format (R-type, I-type, or J-type).
+2. Draw the corresponding machine instruction format.
+3. Look up the table for opcode, funct code, and register numbers.
+
+**Opcode vs. Funct**:
+- **Opcode**: Specifies the operation type (e.g., arithmetic, logical, memory access).
+- **Funct**: Specifies the exact operation within the opcode category (e.g., `add`, `sub`, `and`, `or`).
+
+**OPCode Table**
+| 31-29 | 0(000) | 1(001) | 2(010) | 3(011) | 4(100) | 5(101) | 6(110) | 7(111) |
+|-------|--------|--------|--------|--------|--------|--------|--------|--------|
+| 0(000) | R-format | bltz/gez | jump | jump & link | branch eq | branch ne | blez | bgtz |
+| 1(001) | add immediate | addiu | set less than imm. | sltiu | andi | ori | xori | load upper imm. |
+| 2(010) | TLB | flpt |        |        |        |        |        |        |
+| 3(011) |        |        |        |        |        |        |        |        |
+| 4(100) | load byte | lh | lwl | load word | lbu | lhu | lwr |        |
+| 5(101) | store byte | sh | swl | store word | swr |        |        |        |
+| 6(110) | lwc0 | lwc1 |        |        |        |        |        |        |
+| 7(111) | swc0 | swc1 |        |        |        |        |        |        |
+
+
+**Function Code Table**
+| 5-3   | 0(000)     | 1(001)   | 2(010)  | 3(011)   | 4(100)   | 5(101)   | 6(110) | 7(111) |
+|-------|------------|----------|---------|----------|----------|----------|--------|--------|
+| 0(000) | sll        | srl      | sra     | sllv     | syscall  | break    |        |        |
+| 1(001) | jump reg.  | jalr     |         |          |          |          |        |        |
+| 2(010) | mfhi       | mthi     | mflo    | mtlo     |          |          |        |        |
+| 3(011) | mult       | multu    | div     | divu     |          |          |        |        |
+| 4(100) | add        | addu     | subtract | subu    | and      | or       | xor    | nor    |
+| 5(101) | set l.t.   | sltu     |         |          |          |          |        |        |
+| 6(110) |            |          |         |          |          |          |        |        |
+| 7(111) |            |          |         |          |          |          |        |        |
+
+**Register Table**
+| Name | Number | Usage |
+|------|--------|-------|
+| `$zero` | 0 | Constant value 0 |
+| `$at` | 1 | Assembler temporary for Pseudoinstructions |
+| `$v0-$v1` | 2-3 | Values for results and expression evaluation |
+| `$a0-$a3` | 4-7 | Arguments to functions |
+| `$t0-$t7` | 8-15 | Temporary data, not preserved across function calls |
+| `$s0-$s7` | 16-23 | Saved temporary data, preserved across function calls |
+| `$t8-$t9` | 24-25 | More temporary data, not preserved across function calls |
+| `$k0-$k1` | 26-27 | Reserved for kernel, do not use |
+| `$gp` | 28 | Global pointer for data access |
+| `$sp` | 29 | Stack pointer |
+| `$fp` | 30 | Frame pointer |
+| `$ra` | 31 | Return address |
+
+
+
+Example:
+
+For the `add` instruction:
+- **R-type**: `add $t1, $t2, $t3`
+  - `op` = 000000 (All R-type instructions use a 000000 opcode)
+  - `rs` = `$t2` = 01010
+  - `rt` = `$t3` = 01011
+  - `rd` = `$t1` = 01001
+  - `shamt` = 00000 (not used)
+  - `funct` = 100000 (add)
+
+The machine code for `add $t1, $t2, $t3` is:
+```
+000000 01010 01011 01001 00000 100000
+```
+
+**Machine Language** refers to instructions in numerical format that a computer's CPU can execute directly. A sequence of these instructions is called **Machine Code**.
+
+In MIPS assembly, the order of register fields in machine code is different from the assembly code. In assembly, the format is `op rd rs rt`, while in machine code, the format is `op rs rt rd`.
+
+#### Jump and Branch Addressing
+
+MIPS differentiates between jump and branch instructions based on their address fields:
+- **Jump** instructions use a 26-bit address field.
+- **Branch** instructions use a 16-bit address field and employ **PC-relative addressing**, where the address is relative to the program counter (PC). The PC holds the address of the current instruction, allowing the CPU to branch within the range \(-2^{15}\) to \(2^{15}-1\) words or \(-2^{17}\) to \(2^{17}-1\) bytes from the current instruction, which is \(131072\) in decimal and \(0x20000\) in hexadecimal.
+
+**Example**
+
+**Assembly Code:**
+```assembly
+Loop: 
+    sll $t1, $s3, 2
+    add $t1, $t1, $s6
+    lw $t0, 0($t1)
+    bne $t0, $s5, Exit
+    addi $s3, $s3, 1
+    j Loop
+Exit:
+```
+
+**Machine Code (Decimal):**
+```
+80000: 0 0 19 9 2 0    # sll $t1, $s3, 2
+80004: 0 9 22 9 0 32   # add $t1, $t1, $s6
+80008: 35 9 8 0        # lw $t0, 0($t1)
+80012: 5 8 21 2        # bne $t0, $s5, Exit
+80016: 8 19 19 1       # addi $s3, $s3, 1
+80020: 2 20000         # j Loop
+80024: ...
+```
+
+Assuming the loop starts at memory location `80000` in decimal.
+
+To relatively address the `Loop` and `Exit` labels in branch instructions, we need to calculate the offset from the current instruction. Positive values are forward, and negative values are backward. In this example, when the branch condition is met, the program jumps to `Exit`, which is 2 instructions ahead (in machine code) from the current instruction. Hence, the 16-bit address field in the `bne` instruction is `+2`.
+
+For addressing in the `j` instruction, the 26-bit address field is sufficient. MIPS systems have 2^32 bytes of memory (4GB) divided into 16 blocks of 256MB each. All programs should reside within a block. For instructions in the same block, the first 4 bits of the address remain the same. As all instructions are 4 bytes aligned, the last 2 bits of the address are always 0. Thus, the 26-bit (32 - 4 - 2) address field is enough to address instructions within the same block. 
+
+For instance, (80000)<sub>10</sub> in 32-bit binary is (0000 0000 0000 0001 0011 1000 0100 0000)<sub>2</sub>. Removing the last 2 bits and the first 4 bits, we get (0000 0000 0000 0100 1110 0010 00)<sub>2</sub> = (20000)<sub>10</sub>.
+
+#### Long Distance Branch Addressing
+
+In MIPS, branch instructions like `beq` and `bne` use PC-relative addressing, allowing them to jump within a range of \(-2^{15}\) to \(2^{15}-1\) words from the current instruction. This range is generally sufficient, but if the branch target is outside this range, the assembler handles it by transforming the branch into a combination of an inverted branch followed by a jump instruction.
+
+**Example:**
+```assembly
+beq $s0, $s1, Label
+```
+
+If `Label` is too far for the `beq` instruction to reach, the assembler converts it to:
+
+```assembly
+bne $s0, $s1, Next
+j Label
+Next:
+```
+
+**Explanation:**
+
+- `bne $s0, $s1, Next`: This instruction branches to `Next` if `$s0` is not equal to `$s1`, effectively inverting the original branch condition.
+- `j Label`: If `$s0` equals `$s1`, the `beq` condition is satisfied, so the program continues to this `j` instruction, which can reach the distant `Label`.
+- `Next:`: The point to continue execution if the branch was not taken.
+
+#### Reassembly
+**Steps to Translate Machine Code back to Assembly**:
+1. Identify the instruction format by looking at the first 6 bits (opcode).
+2. Split the instruction into fields based on the format.
+3. Look up the opcode, funct code, and register numbers in the table.
+
+**Example**:
+- Bits: `0000 0000 1010 1111 1000 0000 0010 0000`
+- Opcode: `000000` (R-type)
+- `rs`: `00101`, `rt`: `01111`, `rd`: `10000`, `shamt`: `00000`, `funct`: `100000`
+- `add $s0, $a1, $t7`
+
+**Quick Quiz**:
+a. Op=0, rs=1, rt=2, rd=3, shamt=0, funct=32
+b. Op =0x2B, rs=0x10, rt=0x5, const=0x4
+
+<details>
+<summary>
+🤔 What are the corresponding MIPS assembly instructions, type, and binary representation?
+</summary>
+**a.**
+- **MIPS Assembly Instruction:** `add $v1, $at, $v0`
+- **Type:** R-type
+- **Binary Representation:** `000000 00001 00010 00011 00000 10 0000`
+- **Hexadecimal Representation:** `0x00221820`
+
+**b.**
+- **MIPS Assembly Instruction:** `sw $a1, 4($s0)`
+- **Type:** I-type
+- **Binary Representation:** `101011 10000 01010 0000000000000100`
+- **Hexadecimal Representation:** `0xAE050004`
+
+</details>
+
+<details>
+<summary>
+🤔 How could modifying the MIPS processor and instruction format affect program size?
+</summary>
+
+**Question:**
+We are considering modifying the MIPS processor, which involves changing the instruction format. Specifically, we propose reducing the number of registers to 8 and limiting the immediate field to 10 bits.
+
+1. What would be the new sizes for the bit fields in R-type and I-type instructions?
+2. How could these changes potentially decrease the size of a MIPS assembly program?
+3. How could these changes potentially increase the size of a MIPS assembly program?
+
+**Answer:**
+
+1. **New Bit Field Sizes:**
+   - **R-type Instructions:** 
+     - opcode: 6 bits
+     - rs, rt, rd: 3 bits each
+     - shamt: 5 bits
+     - funct: 6 bits
+     - **Total:** 26 bits
+   - **I-type Instructions:**
+     - opcode: 6 bits
+     - rs, rt: 3 bits each
+     - immediate: 10 bits
+     - **Total:** 22 bits
+
+2. **Decrease in Program Size:**
+   The program size could decrease because each instruction now requires fewer bits (26 bits for R-type and 22 bits for I-type compared to the original 32 bits). This reduction means the program would take up less memory.
+
+3. **Increase in Program Size:**
+   The program size could increase because having fewer registers (8 instead of 32) and a smaller immediate field (10 bits instead of 16) might limit the program's flexibility. This limitation could require more instructions to achieve the same tasks, potentially leading to an overall increase in the number of instructions and thus a larger program size.
+
+</details>
+
+<details>
+<summary>
+🤔 How can an assembler handle problems with PC-relative addressing in a branch instruction?
+</summary>
+
+**Question:**
+Given your understanding of PC-relative addressing, explain why an assembler might have problems directly implementing the branch instruction in the following code sequence:
+
+```assembly
+here: beq $s0, $s2, there
+     ...
+there: add $s0, $s0, $s0
+```
+
+Show how the assembler might rewrite this code sequence to solve these problems.
+
+**Answer:**
+The assembler might have problems because PC-relative addressing for the `beq` instruction requires the target address (`there`) to be within a certain range of the current instruction (`here`). If `there` is too far away, the immediate field cannot represent the offset.
+
+To solve this problem, the assembler can use an unconditional jump (`j`) combined with a conditional branch to an intermediate label:
+
+```assembly
+here: bne $s0, $s2, skip
+      j there
+skip: ...
+there: add $s0, $s0, $s0
+```
+
+By introducing the `skip` label, the assembler can handle cases where the branch target is out of range for PC-relative addressing.
+</details>
+
+<details>
+<summary>
+🤔 Suppose the program counter (PC) is at address 0x20000000. Is it possible to use jump or branch instructions to reach the address 0x20001400? Explain why or why not.
+</summary>
+
+**Answer:**
+
+**Jump Instruction:**
+Yes, it is possible to use a jump (`j`) instruction to reach the address `0x20001400` from `0x20000000`. The jump instruction in MIPS can jump to any address within the current 256MB region. The address range that can be reached by the jump instruction is determined by the 26-bit address field in the instruction, which is shifted left by 2 bits and combined with the upper 4 bits of the current PC. Given the current PC is `0x20000000`, the range of addresses that can be jumped to is `0x20000000` to `0x2003FFFF`. The target address `0x20001400` falls within this range.
+
+**Branch Instruction:**
+Yes, it is also possible to use a branch instruction such as `beq` (branch on equal) to reach the address `0x20001400` from `0x20000000`, but only if the offset is within the allowable range. The branch instructions use a 16-bit signed offset, which allows branching within `-2^15` to `2^15 - 1` instructions. Since each instruction is 4 bytes, this translates to a byte offset range of `-131072` to `131068`.
+
+1. **Calculate the Offset:**
+   $\text{Offset} = 0x20001400 - 0x20000000 = 0x1400 = 5120 \text{(bytes)} = 1280 \text{(instructions)}$.
+   
+
+2. **Check the Offset Range:**
+   The offset 1280 instructions is within the range of `-32768` to `32767` instructions, which is the range for a 16-bit signed offset.
+
+Therefore, both the jump and branch instructions can be used to reach the address `0x20001400` from `0x20000000`. The jump instruction can directly target the address, while the branch instruction can reach it if the offset falls within the specified range.
+
+**Tips1**: Actually, we can check if the offset is within 0x20000 (131072) bytes, which is the range of the branch instruction, directly to see if it is possible to reach the target address without calculating like above.
+
+**Tips2**: We know that jump instruction can reach any address within the current 256MB = 2^28 bytes block in MIPS, so the target address is reachable by comparing if the first 4 bits of the same or not.
+
+</details>
+
+### Procedure Call
+**Steps for Procedure Call:**
+Assume we have two procedures `A` and `B` where `A` calls `B`.
+1. **Set Arguments:** `A` places arguments in registers `$a0` to `$a3`.
+2. **Jump and Link:** `A` executes `jal B`, saving the return address in `$ra`.
+3. **Save Registers:** `B` saves necessary registers.
+4. **Execute `B`:** `B` performs its tasks.
+5. **Set Return Values:** `B` places return values in `$v0` and `$v1`.
+6. **Restore Registers:** `B` restores saved registers.
+7. **Return to Caller:** `B` executes `jr $ra` to return to `A`.
+
+**Review**
+- `$a0-$a3`: Argument registers for passing parameters.
+- `$v0-$v1`: Value registers for returning results.
+- `$ra`: Return address register for storing the address to return to after a procedure call.
+- `jal`: Jump and link instruction to call a procedure and store the return address in `$ra`, where the link is the address of the next instruction after the `jal`, i.e. PC + 4.
+- `jr`: Jump register instruction to return to the address stored in a register.
+
+**Caller** place arguments in `$a0-$a3` and call the procedure using `jal`. The **Callee** saves the return address in `$ra`, performs its tasks, and returns the result in `$v0-$v1`. The **Caller** can access the result from `$v0-$v1` after the procedure call.
+
+`$sp` (stack pointer) is used to store Callee's registers and local variables. The stack grows downwards, and `$sp` points to the last used memory location. Thus, when data is pushed onto the stack, `$sp` is decremented, and vice versa.
+
+<details>
+<summary>
+Convert the C function below to MIPS assembly language. (Assume arguments g, h, i, j in $a0, $a1, $a2, $a3 and f in $s0)
+</summary>
+
+**C Function**
+```c
+int leaf_example (int g, h, i, j) {
+    int f;
+    f = (g + h) - (i + j);
+    return f;
+}
+```
+
+**MIPS Assembly**
+```assembly
+leaf_example:
+    addi $sp, $sp, -4        # Save $s0 on stack
+    sw $s0, 0($sp)           # Save $s0 on stack
+    add $t0, $a0, $a1        # $t0 = g + h
+    add $t1, $a2, $a3        # $t1 = i + j
+    sub $s0, $t0, $t1        # $s0 = (g + h) - (i + j)
+    add $v0, $s0, $zero      # Set return value in $v0
+    lw $s0, 0($sp)           # Restore $s0
+    addi $sp, $sp, 4         # Restore stack pointer
+    jr $ra                   # Return to caller
+```
+
+**Explanation**
+1. **Save Registers:**
+   ```assembly
+   addi $sp, $sp, -4        # Adjust stack pointer to make space for saving $s0
+   sw $s0, 0($sp)           # Save the value of $s0 on the stack
+   ```
+2. **Procedure Body:**
+   ```assembly
+   add $t0, $a0, $a1        # Calculate g + h and store in $t0
+   add $t1, $a2, $a3        # Calculate i + j and store in $t1
+   sub $s0, $t0, $t1        # Calculate (g + h) - (i + j) and store in $s0
+   ```
+3. **Set Return Value:**
+   ```assembly
+   add $v0, $s0, $zero      # Move the result from $s0 to $v0 (return value)
+   ```
+4. **Restore Registers and Return:**
+   ```assembly
+   lw $s0, 0($sp)           # Restore the value of $s0 from the stack
+   addi $sp, $sp, 4         # Adjust stack pointer back
+   jr $ra                   # Jump back to the return address
+   ```
+
+</details>
+
+### Parallelism and Synchronization
+
+**Data Race** occurs when multiple threads concurrently access shared data, with at least one write operation, leading to unpredictable results. For instance:
+
+| Clocks | Thread 1 (`y = x + 100`) | Thread 2 (`x = x + 20`) |
+|--------|--------------------------|--------------------------|
+| c1     | `lw $s0, x`               |                          |
+| c2     | `addi $s0, $s0, 20`       |                          |
+| c3     |                          | `lw $s0, x`               |
+| c4     | `sw $s0, x`               |                          |
+| c5     |                          | `addi $s1, $t0, 100`      |
+
+To ensure mutual exclusion, where only one processor can access a critical section at a time, **locks** can be used.
+
+Processors with an **atomic swap** operation allow programmers to create locks with proper semantics. An atomic swap ensures that the processor reads a location and sets it to a locked value in a single bus operation, preventing other processors from accessing the location until the operation is complete.
+
+MIPS does not include an atomic swap instruction but provides **Load Linked (LL)** and **Store Conditional (SC)** instructions to simulate this behavior.
+
+![LL and SC](https://d3i71xaburhd42.cloudfront.net/e3a1fa2f299b3d120965ee0c74eec85b5d425655/3-Figure3-1.png)
+
+**Atomic Exchange Example (`$s1` and `s4`):**
+```assembly
+try: add $t0, $zero, $s4 # copy value of s4 to t0
+     ll $t1, 0($s1)      # load linked value from s1 to t1
+     sc $t0, 0($s1)      # 1 if load linked value is still in s1 (equal to t1), 0 otherwise
+     beq $t0, $zero, try # if sc failed, try again
+     add $s4, $zero, $t1 # succeeded, copy t1 value to s4
+```
+
+<details>
+<summary>
+Rewrite MIPS assembly code to use LL and SC instructions for atomic exchange to avoid race conditions and make it correct.
+</summary>
+
+**Original Code**
+```assembly
+try:  MOV R3, R4
+      MOV R6, R7
+      LL R2, 0(R2)
+      LL R5, 0(R1)
+      SC R3, 0(R1)
+      SC R6, 0(R1)
+      BEQZ R3, try
+      MOV R4, R2
+      MOV R7, R5
+```
+
+**Modified Code**
+```assembly
+try:
+      MOV R3, R4
+      LL R8, 0(R2)
+      SC R3, 0(R2)
+      BEQZ R3, try
+      MOV R4, R8
+try2: 
+      MOV R6, R7
+      LL R5, 0(R1)
+      SC R6, 0(R1)
+      BEQZ R6, try2
+      MOV R7, R5
+```
+
+</details>
+
+### MIPS Addressing Modes
+**Data Addressing Modes**
+1. **Immediate Addressing**: The operand is in the instruction 16-bit immediate field.
+   - Example: `addi`, `andi`, `ori`
+2. **Register Addressing**: The operand is in a register.
+   - Example: `add`, `sub`, `and`, `or`
+3. **Base or Displacement Addressing**: The operand is at the memory location specified by a base register and a 16-bit constant in the instruction.
+   - Example: `lw`, `sw`, `lb`, `sb`
+**Instruction Addressing Modes**
+4. **PC-relative Addressing**: The target address is calculated relative to the current PC and a 16-bit constant in the instruction.
+   - Example: `beq`, `bne`
+5. **Pseudodirect Addressing**: The target address is calculated by shifting the 26-bit constant in the instruction left by 2 bits and combining it with the upper 4 bits of the current PC. The lower 2 bits are always 00.
+   - Example: `j`, `jal`
+
+![MIPS Addressing Modes](https://i.imgur.com/MdI3PTF.png)
+
+### Design Principles
+1. **Simplicity Favors Regularity**: 1. Make all instructions the same length. 2. 3 operand instructions. 3. Register fields in the same place.
+2. **Smaller is Faster**: 1. Only 32 registers so CPU can access them quickly. 2. Lower energy consumption.
+3. **Good Design Demands Good Compromise**: Use 3 instruction formats (R, I, J) to provide longer immediate values and jump addresses.
+4. **Make the Common Case Fast**: 1. PC-relative addressing for branches. 2. Immediate addressing for constants.
+
+### RISC vs. CISC
+| Feature                                               | RISC                                          | CISC                                      |
+|-------------------------------------------------------|-----------------------------------------------|-------------------------------------------|
+| Instruction Length                                    | Same length for all instructions              | Variable length                           |
+| Addressing Modes                                      | Few addressing modes                          | Many addressing modes                     |
+| Instruction Format                                    | Few instruction formats                       | Many instruction formats                  |
+| Arithmetic Operands                                   | Only from registers, not from memory          | Operands can be from memory or registers  |
+| Memory Data Processing                                | Must load into register before processing     | Can directly process memory data          |
+
+###  Different Types of Instruction Sets
+1. **Accumulator:**
+   - Only one operand.
+   - The other operand is implicitly the accumulator.
+   - Accumulator-based instructions have less memory efficiency.
+
+2. **Memory-Memory:**
+   - Every instruction has three operands.
+   - All operands can be in memory.
+   - Memory-based instructions are not efficient due to their extensive use of memory.
+
+3. **Stack:**
+   - Zero operand (implicitly zero-operand instructions).
+   - Operations occur at the top of the stack.
+   - Push and pop operations are used to manage the stack.
+   - Each instruction implicitly accesses the top elements of the stack.
+
+4. **Load-Store:**
+   - Each instruction has three operands.
+   - Operands are from registers.
+   - Separate load and store operations are used for memory access.
+   - The result of the operation is stored in the registers.
+
+### ARM vs. MIPS
+| Feature                                               | ARM                                           | MIPS                                      |
+|-------------------------------------------------------|-----------------------------------------------|-------------------------------------------|
+| Date announced                                        | 1985                                          | 1981                                      |
+| Instruction size (bits)                               | 32                                            | 32                                        |
+| Addrss space (bits, model)                                   | 32, flat                                     | 32, flat                                  |
+| Data alignment | Aligned | Aligned |
+| Data addressing modes | 9 | 3 |
+| Integer registers | 15 GPR x 32-bit | 32 GPR x 32-bit |
+| I/O addressing | Memory-mapped | Memory-mapped |
