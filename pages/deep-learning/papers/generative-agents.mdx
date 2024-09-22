@@ -1,0 +1,72 @@
+# Generative Agents: Interactive Simulacra of Human Behavior
+
+import { Callout } from 'nextra/components'
+ 
+<Callout type="info" emoji="ℹ️" >
+  Table of Contents
+    - [Abstract](#abstract)
+    - [Background](#background)
+    - [Objective](#objective)
+    - [Results](#results)
+    - [Methodology](#methodology)
+    - [Discussion](#discussion)
+</Callout>
+
+## Abstract
+Generative agents are computational models designed to simulate human-like behavior in interactive environments. Powered by large language models, these agents plan daily tasks, form relationships, and adapt to changes in their surroundings. Their architecture includes a memory stream for storing experiences, a reflection system for generating insights, and a planning mechanism for guiding future actions. In a sandbox environment inspired by *The Sims*, the agents exhibited believable social behaviors such as relationship-building and event coordination. This research has potential applications in virtual worlds and social simulations, while addressing ethical concerns around parasocial relationships and manipulation.
+
+## Background
+### Motivation
+The creation of interactive artificial societies that mimic believable human behavior has long been a goal for researchers working on virtual environments, cognitive models, and related fields. 
+
+With advancements in AI, generative agents—software capable of simulating human-like behaviors—have emerged. These agents utilize large language models to store, retrieve, and reflect on experiences, enabling them to produce coherent, believable behavior over time.
+
+### Goal: Creating Artificial Societies
+A major objective for AI researchers is to create artificial societies that reflect realistic human behavior in virtual settings. 
+
+Generative agents, which rely on a large language model to manage memory, reflection, and planning, are capable of simulating human-like behaviors over extended periods, making interactions in virtual environments more engaging and believable.
+
+![Generative Agents](https://images.ctfassets.net/fxksiu7yxym3/4h1YJ7TYdeFFJBPIyYNmSX/9dfb4129b1f07e1bdf65c6794c9bd329/2023-04-10_Stanford_Generative_Agents.jpeg)
+
+### Growth of AI Agents
+As AI technology continues to evolve, generative agents offer new possibilities. These agents simulate human-like behaviors, leveraging large language models to store, retrieve, and reflect on experiences, enabling them to behave coherently in dynamic environments.
+
+![AI Agents](https://miro.medium.com/v2/resize:fit:1072/1*Goo3Eh1Pkc2VM0X1Pr76VA.jpeg)
+
+### Related Work
+Generative agents build on early AI systems like SHRDLU and ELIZA, cognitive models like GOMS, and more recent large language models such as GPT. While previous systems demonstrated basic interaction and behavior modeling, they struggled with maintaining long-term coherence and believability. This research addresses those challenges by integrating memory, reflection, and planning, resulting in more realistic human behavior simulation.
+
+## Objective
+This research aims to create generative agents that simulate believable human behavior in interactive environments. By integrating memory, reflection, and planning, these agents are designed to maintain long-term coherence and adapt to new situations. The goal is to improve the realism and engagement of virtual simulations, making them valuable for immersive environments, social prototyping, and human-computer interaction research.
+
+> How can we simulate believable human behavior in virtual environments? By creating generative agents that leverage memory, reflection, and planning in a novel architecture that continuously updates and retrieves relevant experiences and reflections.
+
+## Results
+The generative agent architecture effectively produced believable behaviors through the integration of memory, reflection, and planning. Agents with complete memory systems consistently recalled past experiences, though they occasionally embellished details. 
+
+Reflection improved decision-making by synthesizing past experiences into more relevant responses, while planning enabled agents to coordinate future actions. Evaluations demonstrated the successful diffusion of information, the formation of relationships, and effective coordination among agents, showing that they could behave in a realistic and reasonable manner based on their experiences.
+
+![Results](https://images.ctfassets.net/fxksiu7yxym3/ukbt2FAXsCICBhswX0TII/daee8307c5c9ffd81b93a6aec273a019/Screen_Shot_2023-04-10_at_10.15.46_PM.png)
+
+## Methodology
+### Overview
+The architecture integrates three key components—memory and retrieval, reflection, and planning and reacting. These components work together to create believable and coherent agent behavior by recording experiences, synthesizing insights, and enabling dynamic, context-appropriate actions.
+
+![Methodology](https://authoritypartners.com/wp-content/uploads/2024/01/carlosblog2.jpg)
+
+### Memory and Retrieval
+The memory stream records experiences as natural language descriptions with timestamps. The retrieval function prioritizes memories based on recency, importance, and relevance, combining these factors to inform the agent’s actions and improve believability.
+
+![Memory and Retrieval](https://miro.medium.com/v2/resize:fit:1400/1*KsykVGaPzJVkdde52BOTkA.png)
+
+### Reflection
+Reflection enables agents to generalize and make informed decisions by synthesizing insights from past experiences. Periodically, the system generates reflection questions, retrieves relevant memories, and creates higher-level reflections, which are stored back into the memory stream for future use.
+
+![Reflection](https://miro.medium.com/v2/resize:fit:1400/1*ssE308B6vHPnnSLgwWU_SA.png)
+
+### Planning and Reacting
+The planning component creates future action sequences that ensure coherent, goal-driven behavior, while the reacting mechanism updates these plans based on new observations. This allows agents to dynamically adjust their actions and engage in interactions or coordinate activities in a contextually appropriate manner.
+> Status + Observations + Memory + Reflection = Action 
+
+## Discussion
+Generative agents offer significant potential in areas such as social simulations and human-centered design, enhancing virtual environments and improving user experiences. Future work should focus on optimizing memory retrieval, improving performance, and addressing issues like erratic behaviors or overly formal interactions resulting from instruction tuning. Ethical considerations are critical, including mitigating the risks of parasocial relationships and preventing the misuse of these agents in deepfake technology. Generative agents should be used to complement, not replace, human input in design and decision-making processes. 
