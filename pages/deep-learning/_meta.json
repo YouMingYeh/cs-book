@@ -7,5 +7,6 @@
   "transformers-llm": "Transformers: Large Language Models (LLM)",
   "transformers-multi-modal": "Transformers: Multi-Modal Large Language Models",
   "transformers-rag": "Transformers: Retrieval Augmented Generation (RAG)",
-  "transformers-icl": "Transformers: In-Context Learning (ICL)"
+  "transformers-icl": "Transformers: In-Context Learning (ICL)",
+  "papers": "Papers"
 }
